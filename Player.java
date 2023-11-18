@@ -2,25 +2,18 @@ import lang.stride.*;
 import java.util.*;
 import greenfoot.*;
 
-//SLAPPING INOT GIT
 
 public class Player extends Actor
 
 {
     public int tick=0;
-    //public int walkTick=0;
+    public int walkTick=0;
     public int runTick=0;
     public int x;
     public int y;
     public String face; 
     public int sprint=0;
-    public int stam=50;
-    public int health=3;
-    
-    public int door;
-    
-    //======ITEMS=======
-    public boolean breakerKey = false;
+    public int stam=0;
     /**
      * Act - do whatever the player wants to do. This method is called whenever the 'Act' or 'Run' button gets pressed in the environment.
      */
@@ -30,110 +23,13 @@ public class Player extends Actor
         //tick();
         //movement();
         if (stam>0) {
-            sprint();
-        } else {
-            sprint=0;
+        sprint();
         }
-        getPosX();
-        getPosY();
         moves();
+        getPos();
         isMove();
         resetSprite();
         stamina();
-        transitions();
-        pickupKey();
-        displayStatus();
-        checkDeath();
-    }
-    
-    public void transitions() {
-
-        
-        Room world = (Room) getWorld();
-        Entity entity = world.entity;
-        
-        
-        //Door door = (Door) getOneIntersectingObject(Door.class);
-        List<Door> doors = getObjectsInRange(50, Door.class);
-        if (doors.size() == 0) return;
-        Door door = doors.get(0);
-        
-        if (door != null) {
-            if (door.id == 1) {
-                Greenfoot.setWorld( new  Hallway1(this, door, entity));
-            }
-            if (door.id == 2) {
-                Greenfoot.setWorld( new  BasementSpawn(this, door, entity));
-            }
-            if (door.id == 3) {
-                Greenfoot.setWorld( new  Closet(this, door, entity));
-            }
-            if (door.id == 4) {
-                Greenfoot.setWorld( new  BasementSpawn(this, door, entity));
-            }
-            if (door.id == 5) {
-                Greenfoot.setWorld( new  Garage(this, door, entity));
-            }
-            if (door.id == 6) {
-                Greenfoot.setWorld( new  Hallway1(this, door, entity));
-            }
-            if (door.id == 7) {
-                Greenfoot.setWorld( new  LivingRoom(this, door, entity));
-            }
-            if (door.id == 8) {
-                Greenfoot.setWorld( new  Hallway1(this, door, entity));
-            }
-            if (door.id == 13) {
-                Greenfoot.setWorld( new  Hallway2(this, door, entity));
-            }
-            if (door.id == 14) {
-                Greenfoot.setWorld( new  LivingRoom(this, door, entity));
-            }
-        }
-    }
-    
-    public void pickupKey() {
-        Actor Key = getOneIntersectingObject(Key.class);
-        if (Key != null) {
-            World world = getWorld();
-            world.removeObject(Key);
-            breakerKey = true;
-            Greenfoot.playSound("ItemPickupBase.wav");
-        }
-    }
-    
-    private void sprint() {
-        if (Greenfoot.isKeyDown("shift")) {
-            sprint=3;  //sprint multiplier
-            stam--;    //stamina loss
-        }
-        else {
-            sprint=0;
-        }
-        
-        //CHEAT CODE
-        if (Greenfoot.isKeyDown("space")) {
-            sprint=20;  //sprint multiplier
-        }
-    }
-    
-    
-    public void displayStatus() {
-        World world = getWorld();
-        world.showText("Health: "+health, 100,20);
-        world.showText("Stamina: "+stam, 100,40);
-    }
-    public void checkDeath() {
-        if (health<=0) {
-            setLocation(100,100);
-        }
-    }
-    public void stamina() {
-        if (stam<800 && runTick>200) {
-            stam+=50;
-            runTick=0;
-        }
-        runTick++;
     }
     public void moves() {
         if (Greenfoot.isKeyDown("w")) {
@@ -215,24 +111,27 @@ public class Player extends Actor
             setImage("PlayerRightIdle.png");
         }
     }
-    public int getPosX() {
-        x =getX();
-        return x;
+    private void sprint() {
+        if (Greenfoot.isKeyDown("shift")) {
+            sprint=3;  //sprint multiplier
+            stam=0;//stamina loss
+            
+        }
+        else {
+            sprint=0;
+        }
     }
-    public int getPosY() {
-        y =getY();
-        return y;
+    public void stamina() {
+        runTick++;
+        if (stam<50 && runTick>20) {
+            stam++;
+            runTick=0;
+        }
     }
-    
-    
-    /*
-     * public void getPos() {
+    public void getPos() {
         x = getX();
         y = getY();
     }
-     */
-    
-    
     
     
     /*
@@ -271,7 +170,7 @@ public class Player extends Actor
             walkTick=0;
         }
     }
+    
+    }
     */
-    
-    
 }
